@@ -1,7 +1,7 @@
 "use client";
 import { validateSchema } from "@/utils/validations/validationLoginForm";
 import { ErrorMessage, Form, Formik } from "formik";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Alert,
   Box,
@@ -69,7 +69,7 @@ export default function LoginForm() {
 
   return (
     <Grid container>
-      <Grid item sm={6} xs={12}>
+      <Grid item className="flex justify-center" xs={12}>
         <Paper>
           <Box m={5} p={3}>
             <Formik

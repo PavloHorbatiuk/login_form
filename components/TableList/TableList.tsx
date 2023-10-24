@@ -4,19 +4,15 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import EditModal from "../EditModal";
 import { UserType } from "../Table";
 import { usersAPI } from "@/api";
-import axios, { AxiosError } from "axios";
-import { formatDate } from "@/helpers";
-import dayjs from "dayjs";
+import axios from "axios";
 
 interface IProps {
   users: UserType[];
-  handleEditUser: (id: number) => void;
-  handleDeleteUser: (id: number) => void;
   fetchUsers: () => void;
+  nextPage: string;
 }
 
 export const columns: GridColDef[] = [
-  { field: "id", headerName: "ID", width: 50 },
   {
     field: "name",
     headerName: "Name",
@@ -27,7 +23,7 @@ export const columns: GridColDef[] = [
   {
     field: "email",
     headerName: "Email",
-    width: 150,
+    width: 200,
     editable: true,
   },
   {
@@ -48,18 +44,12 @@ export const columns: GridColDef[] = [
     field: "address",
     headerName: "Adress",
     type: "string",
-    width: 200,
+    width: 250,
     editable: true,
-  },
-  {
-    field: "actions",
-    headerName: "Actions",
-    width: 150,
-    sortable: false,
   },
 ];
 
-export const TableList = ({ users, fetchUsers }: IProps) => {
+export const TableList = ({ users, fetchUsers, nextPage }: IProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState<UserType | null>(null);
   const [validInfo, setvalidInfo] = useState({ name: "", validInfo: "" });
@@ -85,7 +75,8 @@ export const TableList = ({ users, fetchUsers }: IProps) => {
     });
   };
 
-  const handleSaveChanges = async () => {
+  const handleSaveChanges = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
       if (selectedRow) {
         const response = await usersAPI.updateUser(selectedRow.id, selectedRow);
@@ -105,17 +96,27 @@ export const TableList = ({ users, fetchUsers }: IProps) => {
   };
 
   return (
-    <div className="p-5">
-      <Paper>
-        <Box sx={{ height: 400, width: "100%" }}>
-          <DataGrid
-            rows={users}
-            columns={columns}
-            onRowClick={handleEditClick}
-            // onRowDeleteClick={handleDeleteClick}
-          />
-        </Box>
-      </Paper>
+    <>
+      <div className="p-5 justify-center flex items-center">
+        <Paper>
+          <Box sx={{ height: 600 }}>
+            <DataGrid
+              rows={users}
+              columns={columns}
+              onRowClick={handleEditClick}
+              paginationMode="server"
+              sx={{
+                ".MuiTablePagination-displayedRows": {
+                  display: "none",
+                },
+              }}
+
+              // onRowDeleteClick={handleDeleteClick}
+            />
+          </Box>
+        </Paper>
+      </div>
+
       <EditModal
         validInfo={validInfo}
         isOpen={isModalOpen}
@@ -124,6 +125,6 @@ export const TableList = ({ users, fetchUsers }: IProps) => {
         handleFieldChange={handleFieldChange}
         handleSaveChanges={handleSaveChanges}
       />
-    </div>
+    </>
   );
 };

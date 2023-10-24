@@ -12,30 +12,18 @@ export interface UserType {
 
 function Table() {
   const [users, setUsers] = useState<UserType[]>([]);
+  const [nextPage, setNextPage] = useState("");
 
   const fetchUsers = async () => {
     try {
       const { data } = await usersAPI.getUsers();
       if (data) {
         setUsers(data.results);
+        setNextPage(data.next);
       }
     } catch (error) {
       console.error(error);
     }
-  };
-
-  const handleDeleteUser = async (id: number) => {
-    try {
-      await usersAPI.deleteUser(id);
-      // Refresh the user list after successful deletion
-      fetchUsers();
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleEditUser = async (id: number) => {
-    // Implement your edit logic here, e.g., open a dialog for editing.
   };
 
   useEffect(() => {
@@ -43,12 +31,7 @@ function Table() {
   }, []);
   return (
     <div className="">
-      <TableList
-        fetchUsers={fetchUsers}
-        users={users}
-        handleEditUser={handleEditUser}
-        handleDeleteUser={handleDeleteUser}
-      />
+      <TableList fetchUsers={fetchUsers} users={users} nextPage={nextPage} />
     </div>
   );
 }

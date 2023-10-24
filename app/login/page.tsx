@@ -5,7 +5,7 @@ import ReduxProvider from "@/store/ReduxProvider";
 
 function page() {
   return (
-    <div className="flex border-solid h-screen items-center">
+    <div className="flex  h-screen items-center">
       <ReduxProvider>
         <LoginForm />
       </ReduxProvider>

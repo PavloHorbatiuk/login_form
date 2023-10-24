@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, FormEventHandler } from "react";
 import {
   Modal,
   Backdrop,
@@ -19,7 +19,7 @@ interface EditModalProps {
   onClose: () => void;
   selectedRow: UserType | null;
   handleFieldChange: (field: string, value: string) => void;
-  handleSaveChanges: () => void;
+  handleSaveChanges: (e: React.FormEvent<HTMLFormElement>) => void;
   validInfo: { name: string; validInfo: string };
 }
 
@@ -43,6 +43,9 @@ export default function EditModal({
   handleSaveChanges,
   validInfo,
 }: EditModalProps) {
+  const formattedDate = dayjs(selectedRow?.birthday_date, "DD-MM-YY").format(
+    "YYYY-MM-DD"
+  );
   return (
     <Modal
       open={isOpen}
@@ -54,7 +57,7 @@ export default function EditModal({
       }}
     >
       <Box sx={style}>
-        <form className="flex flex-col gap-7">
+        <form onSubmit={handleSaveChanges} className="flex flex-col gap-7">
           <Typography variant="h5">Edit Row</Typography>
           <TextField
             label="Name"
@@ -70,23 +73,14 @@ export default function EditModal({
               handleFieldChange("email", e.target.value)
             }
           />
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DateField
-              label="Controlled field"
-              value={selectedRow?.birthday_date || ""}
-              onChange={(newValue) =>
-                handleFieldChange("birthday_date", newValue || "")
-              }
-            />
-          </LocalizationProvider>
-          {/* <TextField
+          <TextField
             type="date"
             label="Birth date"
-            value={selectedRow?.birthday_date || ""}
+            value={formattedDate || ""}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               handleFieldChange("birthday_date", e.target.value)
             }
-          /> */}
+          />
           <TextField
             label="Phone number"
             value={selectedRow?.phone_number || ""}
@@ -102,9 +96,10 @@ export default function EditModal({
             }
           />
           <Button
+            type="submit"
             variant="outlined"
             color="primary"
-            onClick={handleSaveChanges}
+            // onClick={handleSaveChanges}
           >
             Save Changes
           </Button>
