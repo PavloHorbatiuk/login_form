@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import './reset';
+@import './variables/index.css';
+
+.app {
+	min-height: 100vh;
+	color: var(--primary-color);
+	background: var(--bg-color);
+	font: var(--font-m);
+}
